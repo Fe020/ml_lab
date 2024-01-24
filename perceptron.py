@@ -1,32 +1,36 @@
 import numpy as np
-
-class Perceptron:
-    def __init__(self, input_size, learning_rate=0.1, threshold=0.0, max_iterations=1000):
-        self.weights = np.random.rand(input_size)
-        self.threshold = threshold
-        self.learning_rate = learning_rate
-        self.max_iterations = max_iterations
-
-    def activate(self, net_input):
-        return int(net_input >= self.threshold)
-
-    def train(self, input_data, labels):
-        for _ in range(self.max_iterations):
-            converged = all(self._update_weights(np.array(input_vector), label) == 0 for input_vector, label in zip(input_data, labels))
-            if converged:
-                break
-
-    def _update_weights(self, input_vector, label):
-        error = label - self.activate(np.dot(input_vector, self.weights))
-        self.weights += self.learning_rate * error * input_vector
-        return error
-
-# Example usage
-input_data = [[0, 0], [0, 1], [1, 0], [1, 1]]
-labels = [0, 0, 0, 1]
-
-perceptron = Perceptron(input_size=2)
-iterations = perceptron.train(input_data, labels)
-
-print(f"Converged in {iterations} iterations")
-print("Final weights:", perceptron.weights)
+theta = 1
+epoch = 3
+class Perceptron(object):
+def __init__(self, input_size, learning_rate=0.2):
+self.learning_rate = learning_rate
+self.weights = np.zeros(input_size + 1) # zero init for weights and bias
+def predict(self, x):
+return (np.dot(x, self.weights[1:]) + self.weights[0]) # X.W+ B
+def train(self, x, y, weights):
+for inputs, label in zip(x, y):
+net_in = self.predict(inputs)
+if net_in > theta:
+y_out = 1
+elif net_in < -theta:
+y_out = -1
+else:
+y_out = 0
+if y_out != label: # updating the net on incorrect prediction
+self.weights[1:] += self.learning_rate * label *inputs # W = alpha * Y * X
+self.weights[0] += self.learning_rate * label # B =alpha * Y
+print(inputs, net_in, label, y_out, self.weights)
+if __name__ == "__main__":
+x = []
+x.append(np.array([1, 1]))
+x.append(np.array([1, -1]))
+x.append(np.array([-1, 1]))
+x.append(np.array([-1, -1]))
+y = np.array([1, -1, -1, -1])
+perceptron = Perceptron(2)
+for i in range(epoch):
+print("Epoch",i)
+print("X1 X2 ", " Net ", " T ", " Y ", " B Weights")
+weights = perceptron.weights
+print("Initial Weights", weights)
+perceptron.train(x, y, weights)
